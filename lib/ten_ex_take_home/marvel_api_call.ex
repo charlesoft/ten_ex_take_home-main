@@ -9,6 +9,6 @@ defmodule TenExTakeHome.MarvelApiCall do
   end
 
   def changeset(model, attrs \\ %{}) do
-    cast(model, attrs)
+    cast(model, attrs, [:status])
   end
 end

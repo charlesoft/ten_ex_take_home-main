@@ -1,7 +1,7 @@
 defmodule TenExTakeHome.Marvel do
   @default_offset 0
 
-  alias TenExTakeHome.{MarvelApiCalls, Repo}
+  alias TenExTakeHome.{MarvelApiCall, Repo}
 
   def get_characters(params \\ %{}) do
     offset = Map.get(params, :offset)
@@ -24,8 +24,8 @@ defmodule TenExTakeHome.Marvel do
   end
 
   defp create_marvel_api_call(status) do
-    %MarvelApiCalls{}
-    |> MarvelApiCalls.changeset(%{status: status})
+    %MarvelApiCall{}
+    |> MarvelApiCall.changeset(%{status: status})
     |> Repo.insert()
   end
 
