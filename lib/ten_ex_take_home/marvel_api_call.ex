@@ -4,7 +4,7 @@ defmodule TenExTakeHome.MarvelApiCall do
   use Ecto.Schema
   import Ecto.Changeset
 
-  shema "marvel_api_calls" do
+  schema "marvel_api_calls" do
     field :status, :string
   end
 
