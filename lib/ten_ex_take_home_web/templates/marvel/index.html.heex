@@ -1,9 +1,27 @@
 <h1>List of Characters</h1>
-<br/>
+<br />
 <div>
   <ul role="list" class="divide-y divide-gray-100">
-      <%= for {_id, name} <- @characters do %>
-        <li><%= name %></li>
-      <% end  %>
+    <%= for {_id, name} <- @characters do %>
+      <li><%= name %></li>
+    <% end %>
   </ul>
+</div>
+<br />
+<div>
+  <nav class="isolate inline-flex -space-x-px rounded-md shadow-sm" aria-label="Pagination">
+    <%= link(
+      "previous",
+      to: Routes.marvel_path(@conn, :index, %{offset: @offset - @limit}),
+      class:
+        "relative inline-flex items-center rounded-l-md px-2 py-2 text-gray-400 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus:z-20 focus:outline-offset-0"
+    ) %>
+
+    <%= link(
+      "next",
+      to: Routes.marvel_path(@conn, :index, %{offset: @offset + @limit}),
+      class:
+        "relative inline-flex items-center rounded-l-md px-2 py-2 text-gray-400 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus:z-20 focus:outline-offset-0"
+    ) %>
+  </nav>
 </div>
