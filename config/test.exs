@@ -31,3 +31,6 @@ config :logger, level: :warning
 
 # Initialize plugs at runtime for faster test compilation
 config :phoenix, :plug_init_mode, :runtime
+
+# Log what bypass is doing
+config :bypass, enable_debug_log: true
