@@ -6,6 +6,8 @@ defmodule TenExTakeHome.MarvelApiCall do
 
   schema "marvel_api_calls" do
     field :status, :string
+
+    timestamps()
   end
 
   def changeset(model, attrs \\ %{}) do
