@@ -1,6 +1,8 @@
 defmodule TenExTakeHome.Marvel do
   @default_offset 0
 
+  alias TenExTakeHome.{MarvelApiCalls, Repo}
+
   def get_characters(params \\ %{}) do
     offset = Map.get(params, :offset)
     offset = if is_nil(offset), do: @default_offset, else: offset
@@ -11,13 +13,20 @@ defmodule TenExTakeHome.Marvel do
            "#{host}/v1/public/characters?ts=#{ts}&apikey=#{public_api_key}&hash=#{hash}&offset=#{offset}"
          ) do
       {:ok, %HTTPoison.Response{status_code: 200, body: body}} ->
-        %{"data" => %{"results" => results}} = Jason.decode!(body)
+        %{"data" => %{"results" => results}, "status" => status} = Jason.decode!(body)
+        create_marvel_api_call(status)
 
         {:ok, results}
 
       {:error, _error} ->
         {:ok, []}
     end
+  end
+
+  defp create_marvel_api_call(status) do
+    %MarvelApiCalls{}
+    |> MarvelApiCalls.changeset(%{status: status})
+    |> Repo.insert()
   end
 
   defp get_api_credentials do
