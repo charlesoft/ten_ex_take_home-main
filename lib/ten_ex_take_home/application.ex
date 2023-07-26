@@ -7,26 +7,30 @@ defmodule TenExTakeHome.Application do
 
   @impl true
   def start(_type, _args) do
-    children = [
-      # Start the Telemetry supervisor
-      TenExTakeHomeWeb.Telemetry,
-      # Start the Ecto repository
-      TenExTakeHome.Repo,
-      # Start the PubSub system
-      {Phoenix.PubSub, name: TenExTakeHome.PubSub},
-      # Start Finch
-      {Finch, name: TenExTakeHome.Finch},
-      # Start the Endpoint (http/https)
-      TenExTakeHomeWeb.Endpoint,
-      {TenExTakeHome.MarvelServer, name: MarvelCharacters}
-      # Start a worker by calling: TenExTakeHome.Worker.start_link(arg)
-      # {TenExTakeHome.Worker, arg}
-    ]
+    children =
+      [
+        # Start the Telemetry supervisor
+        TenExTakeHomeWeb.Telemetry,
+        # Start the Ecto repository
+        TenExTakeHome.Repo,
+        # Start the PubSub system
+        {Phoenix.PubSub, name: TenExTakeHome.PubSub},
+        # Start Finch
+        {Finch, name: TenExTakeHome.Finch},
+        # Start the Endpoint (http/https)
+        TenExTakeHomeWeb.Endpoint
+        # Start a worker by calling: TenExTakeHome.Worker.start_link(arg)
+        # {TenExTakeHome.Worker, arg}
+      ] ++ marvel_child()
 
     # See https://hexdocs.pm/elixir/Supervisor.html
     # for other strategies and supported options
     opts = [strategy: :one_for_one, name: TenExTakeHome.Supervisor]
     Supervisor.start_link(children, opts)
+  end
+
+  defp marvel_child do
+    if Mix.env() != :test, do: [{TenExTakeHome.MarvelServer, name: MarvelCharacters}], else: []
   end
 
   # Tell Phoenix to update the endpoint configuration
