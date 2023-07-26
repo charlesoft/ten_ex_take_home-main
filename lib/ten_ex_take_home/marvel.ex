@@ -14,12 +14,18 @@ defmodule TenExTakeHome.Marvel do
          ) do
       {:ok, %HTTPoison.Response{status_code: 200, body: body}} ->
         %{"data" => %{"results" => results}, "status" => status} = Jason.decode!(body)
+
         create_marvel_api_call(status)
 
         {:ok, results}
 
-      {:error, _error} ->
-        {:ok, []}
+      {:ok, %HTTPoison.Response{status_code: status_code, body: body}}
+      when status_code in [409, 401] ->
+        %{"code" => status} = Jason.decode!(body)
+
+        create_marvel_api_call(status)
+
+        {:error, Jason.decode!(body)}
     end
   end
 
