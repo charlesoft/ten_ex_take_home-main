@@ -66,7 +66,7 @@ defmodule TenExTakeHomeWeb.MarvelControllerTest do
       assert response =~ "Wolverine"
     end
 
-    test "renders error message if there are failures on the api call", %{
+    test "renders no results if there are failures on the api call", %{
       conn: conn,
       bypass: bypass
     } do
@@ -92,8 +92,10 @@ defmodule TenExTakeHomeWeb.MarvelControllerTest do
       end)
 
       conn = get(conn, Routes.marvel_path(conn, :index, %{"offset" => "4"}))
+      response = html_response(conn, 200)
 
-      assert html_response(conn, 200) =~ "Something went wrong. Please try again"
+      refute response =~ "Spider-Man"
+      refute response =~ "Wolverine"
     end
   end
 end
