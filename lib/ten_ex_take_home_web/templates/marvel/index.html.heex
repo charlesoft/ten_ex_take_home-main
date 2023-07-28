@@ -1,11 +1,13 @@
 <h1>List of Characters</h1>
 <br />
 <div>
+<%= if @characters != [] do %>
   <ul role="list" class="divide-y divide-gray-100">
     <%= for {_id, name} <- @characters do %>
       <li><%= name %></li>
     <% end %>
   </ul>
+<% end %>
 </div>
 <br />
 <div>
