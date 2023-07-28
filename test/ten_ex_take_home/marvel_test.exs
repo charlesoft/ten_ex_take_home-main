@@ -3,6 +3,9 @@ defmodule TenExTakeHome.MarvelTest do
 
   alias TenExTakeHome.{Marvel, MarvelApiCall, Repo}
 
+  import ExUnit.CaptureLog
+  require Logger
+
   setup do
     bypass = Bypass.open()
 
@@ -10,7 +13,8 @@ defmodule TenExTakeHome.MarvelTest do
       host: "localhost:#{bypass.port}",
       public_api_key: "test",
       ts: 1,
-      hash: "test"
+      hash: "test",
+      limit: 20
     )
 
     {:ok, bypass: bypass}
@@ -49,7 +53,7 @@ defmodule TenExTakeHome.MarvelTest do
               ]} = Marvel.get_characters()
     end
 
-    test "returns an error given invalid credentials", %{bypass: bypass} do
+    test "returns an empty list and logs an error given invalid credentials", %{bypass: bypass} do
       response_body =
         %{
           "code" => "InvalidCredentials",
@@ -63,11 +67,10 @@ defmodule TenExTakeHome.MarvelTest do
         |> Plug.Conn.resp(401, response_body)
       end)
 
-      assert {:error,
-              %{
-                "code" => "InvalidCredentials",
-                "message" => "That hash, timestamp and key combination is invalid."
-              }} = Marvel.get_characters()
+      {result, log} = with_log(fn -> Marvel.get_characters() end)
+
+      assert log =~ "InvalidCredentials"
+      assert result == {:ok, []}
     end
 
     test "creates a marvel api call after a sucessful request", %{bypass: bypass} do
