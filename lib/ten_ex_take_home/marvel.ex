@@ -3,11 +3,14 @@ defmodule TenExTakeHome.Marvel do
 
   alias TenExTakeHome.{MarvelApiCall, Repo}
 
+  require Logger
+
   def get_characters(params \\ %{}) do
     offset = Map.get(params, :offset)
     offset = if is_nil(offset), do: @default_offset, else: offset
 
-    [host: host, public_api_key: public_api_key, ts: ts, hash: hash] = get_api_credentials()
+    [host: host, public_api_key: public_api_key, ts: ts, hash: hash, limit: _limit] =
+      get_api_credentials()
 
     case HTTPoison.get(
            "#{host}/v1/public/characters?ts=#{ts}&apikey=#{public_api_key}&hash=#{hash}&offset=#{offset}"
@@ -21,11 +24,13 @@ defmodule TenExTakeHome.Marvel do
 
       {:ok, %HTTPoison.Response{status_code: status_code, body: body}}
       when status_code in [409, 401] ->
-        %{"code" => status} = Jason.decode!(body)
+        error = %{"code" => status} = Jason.decode!(body)
 
         create_marvel_api_call(status)
 
-        {:error, Jason.decode!(body)}
+        Logger.error(error)
+
+        {:ok, []}
     end
   end
 
