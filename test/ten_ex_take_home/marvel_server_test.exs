@@ -54,6 +54,8 @@ defmodule TenExTakeHome.MarvelServerTest do
     test "returns a new list for the given offset when offset is bigger than the cache size", %{
       bypass: bypass
     } do
+
+      # first call
       Bypass.expect(bypass, "GET", "/v1/public/characters", fn conn ->
         conn
         |> Plug.Conn.put_resp_header("content-type", "application/json")
@@ -76,6 +78,7 @@ defmodule TenExTakeHome.MarvelServerTest do
 
       offset = %{"offset" => "2"}
 
+      # second call
       Bypass.expect(bypass, "GET", "/v1/public/characters", fn conn ->
         conn
         |> Plug.Conn.put_resp_header("content-type", "application/json")
