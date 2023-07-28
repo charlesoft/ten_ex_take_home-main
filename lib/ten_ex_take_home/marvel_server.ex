@@ -69,7 +69,7 @@ defmodule TenExTakeHome.MarvelServer do
         %{characters_table: characters_table, offset: offset} = state
       ) do
     result = %{
-      characters: get_characters_list(characters_table),
+      characters: slice_by_offset(characters_table, offset),
       offset: offset
     }
 
