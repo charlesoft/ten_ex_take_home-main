@@ -15,13 +15,9 @@ defmodule TenExTakeHome.MarvelServer do
     GenServer.call(pid_or_name, :list_characters)
   end
 
-  def get_count(pid_or_name) do
-    GenServer.call(pid_or_name, :count)
-  end
-
   @impl true
   def init(_opts) do
-    characters_table = :ets.new(:characters, [:set, :protected])
+    characters_table = :ets.new(:characters, [:named_table])
     {:ok, characters} = Marvel.get_characters()
 
     state = %{
@@ -38,11 +34,11 @@ defmodule TenExTakeHome.MarvelServer do
         _from,
         %{characters_table: characters_table} = state
       ) do
-    count = get_count_table(characters_table)
+    size = :ets.info(characters_table)[:size]
     offset = String.to_integer(offset)
 
     characters_table =
-      if offset > count do
+      if offset > 0 and offset >= size do
         {:ok, characters} = Marvel.get_characters(%{offset: offset})
 
         cache_results(characters, characters_table)
@@ -76,12 +72,6 @@ defmodule TenExTakeHome.MarvelServer do
     {:reply, result, state}
   end
 
-  def handle_call(:count, _from, %{characters_table: characters_table} = state) do
-    count = get_count_table(characters_table)
-
-    {:reply, count, state}
-  end
-
   defp cache_results(characters, characters_table) do
     Enum.each(
       characters,
@@ -92,20 +82,18 @@ defmodule TenExTakeHome.MarvelServer do
   end
 
   defp slice_by_offset(characters_table, offset) do
-    range = (offset - 20)..offset
+    range = offset..(offset + get_limit())
 
     characters_table
     |> get_characters_list()
     |> Enum.slice(range)
   end
 
-  defp get_count_table(characters_table) do
-    characters_table
-    |> get_characters_list()
-    |> Enum.count()
-  end
-
   defp get_characters_list(characters_table) do
     :ets.tab2list(characters_table)
+  end
+
+  defp get_limit do
+    Application.get_env(:ten_ex_take_home, :marvel)[:limit]
   end
 end
