@@ -1,4 +1,7 @@
 defmodule TenExTakeHome.MarvelServer do
+  @moduledoc """
+  GenServer for caching the marvel api call
+  """
   use GenServer
 
   alias TenExTakeHome.Marvel
@@ -37,6 +40,7 @@ defmodule TenExTakeHome.MarvelServer do
     size = :ets.info(characters_table)[:size]
     offset = String.to_integer(offset)
 
+    # check if offset is bigger than the cache size. Otherwise, no need for a new api call
     characters_table =
       if offset > 0 and offset >= size do
         {:ok, characters} = Marvel.get_characters(%{offset: offset})
