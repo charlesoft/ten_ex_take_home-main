@@ -5,6 +5,8 @@ defmodule TenExTakeHome.Application do
 
   use Application
 
+  @env Mix.env()
+
   @impl true
   def start(_type, _args) do
     children =
@@ -30,7 +32,7 @@ defmodule TenExTakeHome.Application do
   end
 
   defp marvel_child do
-    if Mix.env() != :test, do: [{TenExTakeHome.MarvelServer, name: MarvelCharacters}], else: []
+    @env != :test, do: [{TenExTakeHome.MarvelServer, name: MarvelCharacters}], else: []
   end
 
   # Tell Phoenix to update the endpoint configuration
