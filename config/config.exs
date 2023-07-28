@@ -64,7 +64,8 @@ config :ten_ex_take_home, :marvel,
   host: "http://gateway.marvel.com",
   public_api_key: "922c8adbe2cfaa5decd2aab05eecdc25",
   ts: 1,
-  hash: "0c6e834cce16ffa548a519c492d59668"
+  hash: "0c6e834cce16ffa548a519c492d59668",
+  limit: 20
 
 # Import environment specific config. This must remain at the bottom
 # of this file so it overrides the configuration defined above.
