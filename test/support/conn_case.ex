@@ -28,6 +28,8 @@ defmodule TenExTakeHomeWeb.ConnCase do
       import Plug.Conn
       import Phoenix.ConnTest
       import TenExTakeHomeWeb.ConnCase
+
+      alias TenExTakeHomeWeb.Router.Helpers, as: Routes
     end
   end
 
