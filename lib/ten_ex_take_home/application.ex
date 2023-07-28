@@ -31,8 +31,10 @@ defmodule TenExTakeHome.Application do
     Supervisor.start_link(children, opts)
   end
 
+  defp env, do: @env
+
   defp marvel_child do
-    @env != :test, do: [{TenExTakeHome.MarvelServer, name: MarvelCharacters}], else: []
+    if env() != :test, do: [{TenExTakeHome.MarvelServer, name: MarvelCharacters}], else: []
   end
 
   # Tell Phoenix to update the endpoint configuration
